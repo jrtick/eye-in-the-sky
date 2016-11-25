@@ -4,10 +4,10 @@ import RPi.GPIO as GPIO
 
 #globals
 FREQ = 2500
-FRONT_LEFT_PIN = 5
-FRONT_RIGHT_PIN = 24
-BACK_LEFT_PIN = 8
-BACK_RIGHT_PIN = 3
+FRONT_LEFT_PIN = 3
+FRONT_RIGHT_PIN = 8
+BACK_LEFT_PIN = 5
+BACK_RIGHT_PIN = 24
 msg = ""
 stoplistening = False
 client = None
