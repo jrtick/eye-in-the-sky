@@ -26,11 +26,17 @@ if(rpi_dev is not None):
 
   try:
     while(True):
-      lt=abs(int(100*controller.getValue("left-trigger")))
-      rt=abs(int(100*controller.getValue("right-trigger")))
-      lv=abs(int(100*controller.getValue("left-vertical")))
-      rv=abs(int(100*controller.getValue("right-vertical")))
-      socket.send("[%d,%d,%d,%d]" % (lt,rt,lv,rv))
+      if(controller.getValue("power"):
+        socket.send("stop")
+        break
+      else:
+        lt=abs(int(15+35*controller.getValue("left-trigger")))
+        rt=abs(int(15+35*controller.getValue("right-trigger")))
+        lv=abs(int(15+35*controller.getValue("left-vertical")))
+        rv=abs(int(15+35*controller.getValue("right-vertical")))
+        msg = "[%d,%d,%d,%d]" % (lt,rt,lv,rv)
+        socket.send(msg)
+      time.sleep(0.1)
   except:
     print("an error occurred.")
   finally:
