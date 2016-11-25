@@ -62,6 +62,7 @@ class Gyroscope(object):
 
       self.x=get_x_rotation(accel_xout_scaled, accel_yout_scaled, accel_zout_scaled)
       self.y=get_y_rotation(accel_xout_scaled, accel_yout_scaled, accel_zout_scaled)
+      time.sleep(0.1)
 
   def listen_background(self):
     self.thread = threading.Thread(target=self.bg_proc)
