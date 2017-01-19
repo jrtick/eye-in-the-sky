@@ -1,6 +1,10 @@
 import bluetooth,time
+from ps4controller import *
 
-target_name = "pi"
+print("looking for ps4 controller")
+controller = PS4Controller()
+controller.listen_background()
+print("PS4 controller found")
 
 print("looking for devices")
 nearby_devices = bluetooth.discover_devices()
@@ -10,7 +14,7 @@ rpi_dev = None
 for dev in nearby_devices:
   curname = bluetooth.lookup_name(dev)
   print(curname)
-  if(curname is not None and target_name in curname):
+  if(curname is not None and "pi" in curname):
     rpi_dev = dev
     break
 
@@ -19,13 +23,18 @@ if(rpi_dev is not None):
   socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
   socket.connect((rpi_dev,1))
   print("Connected!")
-  socket.send("[10,10,10,10]")
-  time.sleep(10)
-  socket.send("[40,40,40,40]")
-  time.sleep(5)
-  socket.send("[30,30,30,30]")
-  time.sleep(5)
-  socket.send("stop")
-  socket.close()
+
+  try:
+    while(True):
+      lt=abs(int(100*controller.getValue("left-trigger")))
+      rt=abs(int(100*controller.getValue("right-trigger")))
+      lv=abs(int(100*controller.getValue("left-vertical")))
+      rv=abs(int(100*controller.getValue("right-vertical")))
+      socket.send("[%d,%d,%d,%d]" % (lt,rt,lv,rv))
+  except:
+    print("an error occurred.")
+  finally:
+    socket.send("stop")
+    socket.close()
 else:
   print("could not find rpi")
