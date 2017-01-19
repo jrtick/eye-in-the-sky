@@ -3,15 +3,15 @@ import RPi.GPIO as GPIO
 
 
 #globals
-FREQ = 2500000
-FRONT_LEFT_PIN = 0
-FRONT_RIGHT_PIN = 0
-BACK_LEFT_PIN = 0
-BACK_RIGHT_PIN = 0
+FREQ = 2500
+FRONT_LEFT_PIN = 2
+FRONT_RIGHT_PIN = 3
+BACK_LEFT_PIN = 4
+BACK_RIGHT_PIN = 17
 
 
 #setup pins
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(FRONT_LEFT_PIN,GPIO.OUT)
 GPIO.setup(FRONT_RIGHT_PIN,GPIO.OUT)
 GPIO.setup(BACK_LEFT_PIN,GPIO.OUT)
@@ -29,6 +29,7 @@ BR.start(0)
 
 
 #get connection
+print("listening for connection...")
 socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 socket.bind(("",1))
 socket.listen(1)
@@ -38,17 +39,28 @@ print("Connected")
 try:
   while True:
     msg = client.recv(1024)
+    print("heard",msg)
     if(msg.lower()=="stop"):
+      FL.ChangeDutyCycle(0)
+      FR.ChangeDutyCycle(0)
+      BL.ChangeDutyCycle(0)
+      BR.ChangeDutyCycle(0)
       break
     else:
       try:
-        pwrs = eval(msg) #msg should be "ww xx yy zz"
+        pwrs = eval(msg) #[msg should be "ww xx yy zz]"
       except:
         pwrs = [0,0,0,0]
-      FL.changeDutyCycle(pwrs[0])
-      FR.changeDutyCycle(pwrs[1])
-      BL.changeDutyCycle(pwrs[2])
-      BR.changeDutyCycle(pwrs[3])
+      for i in range(4):
+        if(pwrs[i]>40):
+          pwrs[i]=40
+        if(pwrs[i]<0):
+          pwrs[i]=0
+      print(pwrs)
+      FL.ChangeDutyCycle(pwrs[0])
+      FR.ChangeDutyCycle(pwrs[1])
+      BL.ChangeDutyCycle(pwrs[2])
+      BR.ChangeDutyCycle(pwrs[3])
 except:
   print("an error occurred?")
 
