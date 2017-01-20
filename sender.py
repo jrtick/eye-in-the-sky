@@ -26,8 +26,7 @@ if(rpi_dev is not None):
 
   try:
     while(True):
-      if(controller.getValue("power"):
-        socket.send("stop")
+      if(controller.getValue("power")):
         break
       else:
         lt=abs(int(15+35*controller.getValue("left-trigger")))
@@ -39,8 +38,7 @@ if(rpi_dev is not None):
       time.sleep(0.1)
   except:
     print("an error occurred.")
-  finally:
-    socket.send("stop")
-    socket.close()
+  socket.send("stop")
+  socket.close()
 else:
   print("could not find rpi")
